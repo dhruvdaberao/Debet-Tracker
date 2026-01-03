@@ -66,6 +66,13 @@
 </head>
 <body class="selection:bg-yellow-200">
     <div id="root"></div>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed:', err));
+        });
+      }
+    </script>
 <script type="module" src="/index.tsx"></script>
 </body>
 </html>
