@@ -3,7 +3,8 @@
   "name": "Hisab - Simple Ledger",
   "short_name": "Hisab",
   "description": "A minimalist personal ledger to track debts and credits.",
-  "start_url": ".",
+  "start_url": "index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#fef9c3",
   "theme_color": "#facc15",
@@ -11,12 +12,26 @@
     {
       "src": "coin.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "coin.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "coin.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "coin.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
