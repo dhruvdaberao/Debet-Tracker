@@ -4,6 +4,7 @@ import { PersonRecord, Entry } from './types';
 import { EntryModal } from './components/EntryModal';
 import { CategoryManagerModal } from './components/CategoryManagerModal';
 import { INITIAL_CATEGORIES } from './constants';
+import confetti from 'canvas-confetti';
 
 const App: React.FC = () => {
   const [people, setPeople] = useState<PersonRecord[]>(() => {
@@ -51,8 +52,25 @@ const App: React.FC = () => {
   };
 
   const deletePerson = (id: string) => {
-    if (confirm("Delete this person?")) {
+    if (confirm("Delete this person and all their history?")) {
       setPeople(people.filter(p => p.id !== id));
+    }
+  };
+
+  const clearPersonEntries = (id: string) => {
+    if (confirm("Clear all transactions for this person? The profile will remain.")) {
+      setPeople(prev => prev.map(p => {
+        if (p.id === id) {
+          return { ...p, entries: [] };
+        }
+        return p;
+      }));
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#facc15', '#000000', '#ffffff']
+      });
     }
   };
 
@@ -71,15 +89,23 @@ const App: React.FC = () => {
     }));
   };
 
-  const calculateTotal = (entries: Entry[]) => entries.reduce((acc, e) => acc + e.amount, 0);
+  const calculateIndividualTotal = (entries: Entry[]) => entries.reduce((acc, e) => acc + e.amount, 0);
+
+  // Global Totals
+  const globalSummary = people.reduce((acc, p) => {
+    const total = calculateIndividualTotal(p.entries);
+    if (total > 0) acc.receive += total;
+    if (total < 0) acc.give += Math.abs(total);
+    return acc;
+  }, { receive: 0, give: 0 });
 
   return (
-    <div className="min-h-screen p-4 md:p-12 max-w-6xl mx-auto">
+    <div className="min-h-screen p-4 md:p-12 max-w-6xl mx-auto flex flex-col">
       {/* Header */}
       <header className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
         <div className="text-center md:text-left">
           <h1 className="text-4xl font-extrabold tracking-tighter">Hisab</h1>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Simple Ledger</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Simple Ledger</p>
         </div>
 
         <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
@@ -111,15 +137,15 @@ const App: React.FC = () => {
       </header>
 
       {/* Compact List View */}
-      <div className="space-y-2">
+      <div className="space-y-2 flex-1">
         {people.length === 0 && (
-          <div className="py-20 text-center opacity-20 border-2 border-dashed border-gray-200 curved">
+          <div className="py-20 text-center opacity-20 border-2 border-dashed border-gray-400 curved">
             <p className="text-[10px] font-bold uppercase tracking-widest">No records found</p>
           </div>
         )}
 
         {people.map((person) => {
-          const total = calculateTotal(person.entries);
+          const total = calculateIndividualTotal(person.entries);
           return (
             <div 
               key={person.id} 
@@ -129,12 +155,20 @@ const App: React.FC = () => {
                 <h2 className="text-sm font-extrabold truncate uppercase tracking-tight">
                   {person.name}
                 </h2>
-                <button 
-                  onClick={() => deletePerson(person.id)}
-                  className="text-[8px] font-bold uppercase text-gray-200 hover:text-red-400 transition-colors w-fit"
-                >
-                  Delete
-                </button>
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => deletePerson(person.id)}
+                    className="text-[8px] font-bold uppercase text-gray-300 hover:text-red-500 transition-colors w-fit"
+                  >
+                    Delete
+                  </button>
+                  <button 
+                    onClick={() => clearPersonEntries(person.id)}
+                    className="text-[8px] font-bold uppercase text-gray-300 hover:text-blue-500 transition-colors w-fit"
+                  >
+                    Clear
+                  </button>
+                </div>
               </div>
 
               <div className="flex-1 flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth w-full min-h-[40px]">
@@ -194,6 +228,18 @@ const App: React.FC = () => {
         })}
       </div>
 
+      {/* Global Summary Bottom Bar */}
+      <div className="mt-8 mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white curved p-6 border border-green-100 shadow-sm flex flex-col items-center md:items-start">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Cash to Receive</span>
+          <span className="text-4xl font-black text-green-600 tracking-tighter">₹{globalSummary.receive.toLocaleString()}</span>
+        </div>
+        <div className="bg-white curved p-6 border border-red-100 shadow-sm flex flex-col items-center md:items-start">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Cash to Give</span>
+          <span className="text-4xl font-black text-red-600 tracking-tighter">₹{globalSummary.give.toLocaleString()}</span>
+        </div>
+      </div>
+
       <EntryModal
         isOpen={modalState.isOpen}
         mode={modalState.mode}
@@ -210,8 +256,8 @@ const App: React.FC = () => {
         onUpdateCategories={setCategories}
       />
 
-      <footer className="mt-16 text-center">
-        <p className="text-[8px] font-bold uppercase tracking-[0.4em] text-gray-200">Hisab • Clean Ledger</p>
+      <footer className="mt-8 pb-8 text-center">
+        <p className="text-[8px] font-bold uppercase tracking-[0.4em] text-gray-400 opacity-50">Hisab • Clean Ledger</p>
       </footer>
     </div>
   );

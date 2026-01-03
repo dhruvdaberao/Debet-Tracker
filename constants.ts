@@ -2,7 +2,7 @@
 export const INITIAL_CATEGORIES = [
   'Coffee',
   'Tea',
-  
+  'E-manual',
   'Mess',
   'Pizza',
   'Movie Ticket',
@@ -11,15 +11,16 @@ export const INITIAL_CATEGORIES = [
   'Amritsari',
   'SP Food',
   'Richi Rich',
-
+  'Guru',
+  'Khanna',
   'Fruits',
   'Sp Stationary',
- 
+  'Maggie',
   'Snack Shop',
   'Katraj Derry',
   'Ice Cream',
   'Milky Mist',
-
+  'Bhel',
   'Parcel',
   'Shop'
 ];
