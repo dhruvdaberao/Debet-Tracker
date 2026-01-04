@@ -3,7 +3,7 @@
   "name": "Hisab - Simple Ledger",
   "short_name": "Hisab",
   "description": "A minimalist personal ledger to track debts and credits.",
-  "start_url": "./",
+  "start_url": "hisaab-debet-tracker.vercel.app",
   "scope": "./",
   "display": "standalone",
   "background_color": "#fef9c3",
