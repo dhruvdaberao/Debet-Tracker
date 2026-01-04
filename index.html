@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hisab - Simple Ledger</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="coin.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" href="/coin.png">
     <meta name="theme-color" content="#facc15">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,17 +62,15 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body class="selection:bg-yellow-200">
     <div id="root"></div>
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed:', err));
+          navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed:', err));
         });
       }
     </script>
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>
